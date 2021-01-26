@@ -5,6 +5,7 @@ import java.util.List;
 import com.myclass.dto.AddCourseDto;
 import com.myclass.dto.CourseDto;
 import com.myclass.dto.EditCourseDto;
+import com.myclass.dto.MenuCourseDto;
 
 public interface CourseService {
 
@@ -19,5 +20,7 @@ public interface CourseService {
 	EditCourseDto getCourseById(int id);
 
 	boolean findByTitle(String title);
+
+	List<MenuCourseDto> getMenuCourseByCategoryId(int id);
 
 }

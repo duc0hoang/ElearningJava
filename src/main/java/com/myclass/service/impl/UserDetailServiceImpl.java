@@ -3,6 +3,8 @@ package com.myclass.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,7 @@ import com.myclass.entity.User;
 import com.myclass.repository.UserRepository;
 
 @Service
+@Transactional(rollbackOn = Exception.class)
 public class UserDetailServiceImpl implements UserDetailsService {
 	private UserRepository userRepository;
 

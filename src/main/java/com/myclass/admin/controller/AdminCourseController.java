@@ -17,10 +17,10 @@ import com.myclass.service.CourseService;
 
 @RestController
 @RequestMapping("/api/admin/course")
-public class CourseController {
+public class AdminCourseController {
 	private CourseService courseService;
 	
-	public CourseController(CourseService courseService) {
+	public AdminCourseController(CourseService courseService) {
 		this.courseService = courseService;
 	}
 	

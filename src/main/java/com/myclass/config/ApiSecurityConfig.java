@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.myclass.filter.AuthFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -53,15 +56,20 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors();
 		
 		http.csrf().disable()
-		.antMatcher("/api/**")
 		.authorizeRequests()
-		.antMatchers("/api/auth/login","/api/admin/**")
-		.permitAll()
-		.antMatchers("api/user/**")
+		.antMatchers("api/admin/user/**","api/admin/role/**")
 		.hasAnyRole("ADMIN")
-		.antMatchers("api/course/**")
+		.and()
+		.authorizeRequests()
+		.antMatchers("api/admin/course/**")
 		.hasAnyRole("ADMIN","TEACHER")
-		.anyRequest()
+		.and()
+		.authorizeRequests()
+		.antMatchers("/api/admin/**")
 		.authenticated();
+		
+		http.addFilter(new AuthFilter(authenticationManager(), userDetailsService));
+		
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 }

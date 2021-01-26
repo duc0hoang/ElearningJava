@@ -18,4 +18,6 @@ public interface CourseRepository extends BaseRepository<Course, Integer>{
 	@Query("SELECT c FROM Course c WHERE c.title = :title")
 	Course findByTitle(@Param("title") String title);
 
+	List<Course> findAllByCategoryId(int id);
+
 }
