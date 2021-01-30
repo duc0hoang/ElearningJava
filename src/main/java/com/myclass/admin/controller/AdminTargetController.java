@@ -14,37 +14,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myclass.dto.AddCourseDto;
-import com.myclass.dto.EditCourseDto;
-import com.myclass.service.CategoryService;
+import com.myclass.dto.AddTargetDto;
+import com.myclass.dto.EditTargetDto;
 import com.myclass.service.CourseService;
+import com.myclass.service.TargetService;
 
 @RestController
-@RequestMapping("/api/admin/course")
-public class AdminCourseController {
+@RequestMapping("/api/admin/target")
+public class AdminTargetController {
+	private TargetService targetService;
 	private CourseService courseService;
-	private CategoryService categoryService;
-
-	@Value("${message.title}")
-	private String titleIsExist;
-
-	@Value("${message.category}")
-	private String categoryIsNotExist;
 
 	@Value("${message.id}")
 	private String idIsNotExist;
 
-	public AdminCourseController(CourseService courseService, CategoryService categoryService) {
+	@Value("${message.title}")
+	private String titleIsExist;
+	
+	@Value("${message.course}")
+	private String courseIsNotExist;
+
+	public AdminTargetController(TargetService targetService, CourseService courseService) {
+		this.targetService = targetService;
 		this.courseService = courseService;
-		this.categoryService = categoryService;
 	}
 
-	// lấy danh sách course
 	@GetMapping("")
 	public Object get() {
 		try {
-			// trả về danh sách course
-			return new ResponseEntity<Object>(courseService.getAllWithCategory(), HttpStatus.OK);
+			// trả về danh sách target có course name
+			return new ResponseEntity<Object>(targetService.getAllWithCourse(), HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -52,20 +51,19 @@ public class AdminCourseController {
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
 
-	// thêm vào 1 course mới
 	@PostMapping("")
-	public Object post(@Valid @RequestBody AddCourseDto entity) {
+	public Object post(@Valid @RequestBody AddTargetDto entity) {
 		try {
-			// check xem title có bị trùng không
-			if (courseService.checkExistByTitle(entity.getTitle()))
+			// check xem target title có bị trùng hay không
+			if (targetService.checkExistByTitle(entity.getTitle()))
 				return new ResponseEntity<Object>(titleIsExist, HttpStatus.BAD_REQUEST);
 
-			// check xem categoryId có tồn tại chưa
-			if (!categoryService.checkExistById(entity.getCategoryId()))
-				return new ResponseEntity<Object>(categoryIsNotExist, HttpStatus.BAD_REQUEST);
+			// check xem course id có tồn tại hay không
+			if (!courseService.checkExistById(entity.getCourseId()))
+				return new ResponseEntity<Object>(courseIsNotExist, HttpStatus.BAD_REQUEST);
 
-			// thêm course mới vào database
-			courseService.add(entity);
+			// thêm target mới vào database
+			targetService.add(entity);
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -77,12 +75,12 @@ public class AdminCourseController {
 	@GetMapping("{id}")
 	public Object get(@PathVariable int id) {
 		try {
-			// check xem courseId có tồn tại chưa
-			if (!courseService.checkExistById(id))
+			// check xem target id có tồn tại hay không
+			if (!targetService.checkExistById(id))
 				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
 
-			// trả về course theo id gửi lên
-			return new ResponseEntity<Object>(courseService.getCourseById(id), HttpStatus.OK);
+			// trả về target theo id gửi lên
+			return new ResponseEntity<Object>(targetService.getTargetById(id), HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -91,26 +89,26 @@ public class AdminCourseController {
 	}
 
 	@PutMapping("{id}")
-	public Object put(@Valid @RequestBody EditCourseDto entity, @PathVariable int id) {
+	public Object put(@RequestBody EditTargetDto entity, @PathVariable int id) {
 		try {
-			// check xem id gửi lên và id trong course có trùng hay không
+			// check xem id gửi lên và id trong target có giống nhau hay không
 			if (id != entity.getId())
 				return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 
-			// check xem courseId có tồn tại chưa
-			if (!courseService.checkExistById(entity.getId()))
+			// check xem target id có tồn tại hay không
+			if (!targetService.checkExistById(id))
 				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
 
-			// check xem title có bị trùng không
-			if (courseService.checkExistByTitle(entity.getTitle()))
-				return new ResponseEntity<Object>("Title is exist", HttpStatus.BAD_REQUEST);
+			// check xem target title có bị trùng hay không
+			if (targetService.checkExistByTitle(entity.getTitle()))
+				return new ResponseEntity<Object>(titleIsExist, HttpStatus.BAD_REQUEST);
 
-			// check xem categoryId có tồn tại chưa
-			if (!categoryService.checkExistById(entity.getCategoryId()))
-				return new ResponseEntity<Object>(categoryIsNotExist, HttpStatus.BAD_REQUEST);
+			// check xem course id có tồn tại hay không
+			if (!courseService.checkExistById(entity.getCourseId()))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
 
-			// sửa course trong database
-			courseService.edit(entity);
+			// sửa target dưới database
+			targetService.edit(entity);
 			return new ResponseEntity<Object>(HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -122,12 +120,12 @@ public class AdminCourseController {
 	@DeleteMapping("{id}")
 	public Object delete(@PathVariable int id) {
 		try {
-			// check xem courseId có tồn tại chưa
-			if (!courseService.checkExistById(id))
+			// check xem target id có tồn tại hay không
+			if (!targetService.checkExistById(id))
 				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
 
-			// xóa course theo id gửi lên dưới database
-			courseService.deleteById(id);
+			// xóa target theo id gửi lên dưới database
+			targetService.deleteById(id);
 			return new ResponseEntity<Object>(HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception

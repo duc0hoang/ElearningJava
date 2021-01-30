@@ -1,16 +1,13 @@
 package com.myclass.dto;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.Length;
 
 public class AddCategoryDto {
 	
-	@NotEmpty(message = "The title cannot be blank!")
-	@Length(max = 20, min = 4,message = "The titel must be more than 3 and less than 21 characters")
+	@Pattern(regexp = "^[a-zA-Z ]+{4,50}$", message = "Title must is words and contain from 4 to 50 characters.")
 	private String title;
 	
-	@NotEmpty(message = "The icon cannot be blank!")
 	private String icon;
 	public String getTitle() {
 		return title;

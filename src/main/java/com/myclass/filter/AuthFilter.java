@@ -37,7 +37,6 @@ public class AuthFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("tokennnnnnnnn"+secretKey);
 		String token = request.getHeader("Authorization");
 
 //		System.out.println(token);

@@ -2,16 +2,14 @@ package com.myclass.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-
-import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.Pattern;
 
 public class LoginDto {
 	@NotEmpty(message = "Email cannot empty!")
 	@Email(message = "Email is not valid!")
 	private String email;
 	
-	@NotEmpty(message = "Password cannot empty!")
-	@Length(min = 8,message = "Password must be at least 8 characters!")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()+=])(?=\\S+$).{8,}$", message = "Password must be contains at least 8 characters, a digit must occur at least once, a lower case letter must occur at least once, an upper case letter must occur at least once, a special character must occur at least once and no whitespace allowed in the entire string")
 	private String password;
 
 	public LoginDto() {

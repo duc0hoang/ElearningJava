@@ -23,6 +23,8 @@ public class Course {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@Column(unique = true)
 	private String title;
 	private String image;
 	

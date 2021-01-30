@@ -10,14 +10,17 @@ import com.myclass.dto.CourseDto;
 import com.myclass.entity.Course;
 
 @Repository
-public interface CourseRepository extends BaseRepository<Course, Integer>{
-	
+public interface CourseRepository extends BaseRepository<Course, Integer> {
+
 	@Query("SELECT new com.myclass.dto.CourseDto(c.id, c.title, c.image, c.leturesCount, c.hourCount, c.viewCount, c.price, c.discount, c.promotionPrice, c.description, c.content, ct.title, c.lastUpdate) FROM Course c LEFT JOIN Category ct ON c.categoryId = ct.id")
-	List<CourseDto> getAllWithCategory();
+	public List<CourseDto> getAllWithCategory();
 
-	@Query("SELECT c FROM Course c WHERE c.title = :title")
-	Course findByTitle(@Param("title") String title);
+	public Course findByTitle(String title);
 
-	List<Course> findAllByCategoryId(int id);
+	public List<Course> findAllByCategoryId(int id);
 
+	@Query("SELECT new com.myclass.dto.CourseDto(c.id, c.title, c.image, c.leturesCount, c.hourCount, c.viewCount, c.price, c.discount, c.promotionPrice, c.description, c.content, ct.title, c.lastUpdate) FROM Course c LEFT JOIN Category ct ON c.categoryId = ct.id WHERE c.id = :id")
+	public CourseDto getCourseDtoWithCategoryById(@Param("id") int id);
+
+	
 }

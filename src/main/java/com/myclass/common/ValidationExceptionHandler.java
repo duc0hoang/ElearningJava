@@ -23,18 +23,17 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		BindingResult bindingResult = ex.getBindingResult();
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-		
+
 		List<String> listError = new ArrayList<String>();
 		for (FieldError fieldError : fieldErrors) {
 			listError.add(fieldError.getDefaultMessage());
 		}
-		
+
 		Map<String, Object> body = new LinkedHashMap<String, Object>();
 		body.put("timestamp", new Date());
 		body.put("status", status.value());
 		body.put("errors", listError);
-		
-		
-		return new ResponseEntity<Object>(body,headers,status);
+
+		return new ResponseEntity<Object>(body, headers, status);
 	}
 }

@@ -17,4 +17,8 @@ public interface RoleService {
 
 	void edit(RoleDto entity);
 
+	boolean checkExistById(int id);
+
+	boolean checkExistByName(String name);
+
 }

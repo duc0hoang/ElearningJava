@@ -12,6 +12,8 @@ import com.myclass.entity.Video;
 public interface VideoRepository extends BaseRepository<Video, Integer>{
 	
 	@Query("SELECT new com.myclass.dto.VideoDto(v.id, v.title, v.url, v.timeCount, c.title) FROM Video v LEFT JOIN Course c ON v.courseId = c.id")
-	List<VideoDto> getAllWithCourse();
+	public List<VideoDto> getAllWithCourse();
+
+	public Video findByTitle(String title);
 
 }

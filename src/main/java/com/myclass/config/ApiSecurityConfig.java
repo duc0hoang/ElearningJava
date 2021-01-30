@@ -57,6 +57,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.csrf().disable()
 		.authorizeRequests()
+		.antMatchers("/api/admin/**")
+		.permitAll()
+		.and()
+		.authorizeRequests()
 		.antMatchers("api/admin/user/**","api/admin/role/**")
 		.hasAnyRole("ADMIN")
 		.and()

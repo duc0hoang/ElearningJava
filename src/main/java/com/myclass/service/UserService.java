@@ -6,6 +6,7 @@ import com.myclass.dto.AddUserDto;
 import com.myclass.dto.EditUserDto;
 import com.myclass.dto.SignUpDto;
 import com.myclass.dto.UserDto;
+import com.myclass.dto.UserLoginDto;
 
 public interface UserService {
 
@@ -20,5 +21,19 @@ public interface UserService {
 	void edit(EditUserDto entity);
 
 	void signUp(SignUpDto dto);
+
+	boolean checkExistById(int id);
+
+	boolean checkExistByEmail(String email);
+
+	boolean checkExistByPhone(String phone);
+
+	UserLoginDto getUserLoginDtoByEmail(String email);
+
+	boolean checkPassword(String email, String oldPassword);
+
+	void changePassword(String email, String newPassword);
+
+	void setNewPassword(int id, String newPassword);
 
 }

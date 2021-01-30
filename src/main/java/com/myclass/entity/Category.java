@@ -18,9 +18,9 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@Column(unique = true)
 	private String title;
-	@Column(unique = true)
 	private String icon;
 	
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)

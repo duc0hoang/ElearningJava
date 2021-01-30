@@ -1,6 +1,10 @@
 package com.myclass.dto;
 
+import javax.validation.constraints.Min;
+
 public class CategoryDto {
+	
+	@Min(value = 1,message = "Category id must be larger than 0")
 	private int id;
 	private String title;
 	private String icon;

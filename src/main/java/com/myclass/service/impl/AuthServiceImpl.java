@@ -2,6 +2,8 @@ package com.myclass.service.impl;
 
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
+@Transactional(rollbackOn = Exception.class)
 public class AuthServiceImpl implements AuthService {
 	private AuthenticationManager authenticationManager;
 

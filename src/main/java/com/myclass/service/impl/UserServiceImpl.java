@@ -2,6 +2,8 @@ package com.myclass.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +11,13 @@ import com.myclass.dto.AddUserDto;
 import com.myclass.dto.EditUserDto;
 import com.myclass.dto.SignUpDto;
 import com.myclass.dto.UserDto;
+import com.myclass.dto.UserLoginDto;
 import com.myclass.entity.User;
 import com.myclass.repository.UserRepository;
 import com.myclass.service.UserService;
 
 @Service
+@Transactional(rollbackOn = Exception.class)
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
@@ -22,32 +26,81 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public List<UserDto> getAllUserWithRole() {
+		// trả về danh sách user có role name
 		return userRepository.getAllUserWithRole();
 	}
 
 	public EditUserDto getUserById(int id) {
+		// chuyển entity sang dto
 		User entity = userRepository.findById(id).get();
-		return new EditUserDto(entity.getId(),entity.getFullname(), entity.getAvatar(),
-				entity.getPhone(), entity.getAddress(), entity.getRoleId());
+		return new EditUserDto(entity.getId(), entity.getFullname(), entity.getPhone(), entity.getAddress(),
+				entity.getRoleId());
 	}
 
 	public void deleteById(int id) {
+		// xóa user
 		userRepository.deleteById(id);
 	}
 
 	public void add(AddUserDto entity) {
-		userRepository.save(new User(0, entity.getEmail(), entity.getFullname(), BCrypt.hashpw(entity.getPassword(), BCrypt.gensalt()),
-				entity.getAvatar(), entity.getAddress(), entity.getPhone(), entity.getRoleId()));
+		// thêm user mới với password đã hash
+		userRepository.save(new User(0, entity.getEmail(), entity.getFullname(),
+				BCrypt.hashpw(entity.getPassword(), BCrypt.gensalt()), "", entity.getAddress(), entity.getPhone(),
+				entity.getRoleId()));
 	}
 
 	public void edit(EditUserDto entity) {
+		// sửa thông tin user
 		User user = userRepository.findById(entity.getId()).get();
 		userRepository.save(new User(entity.getId(), user.getEmail(), entity.getFullname(), user.getPassword(),
-				entity.getAvatar(), entity.getAddress(), entity.getPhone(), entity.getRoleId()));
+				user.getAvatar(), entity.getAddress(), entity.getPhone(), entity.getRoleId()));
 	}
 
-	public void signUp(SignUpDto dto) {
-		
+	public void signUp(SignUpDto entity) {
+		// đăng ký tài khoản user thì sẽ có role là student
+		userRepository.save(new User(0, entity.getEmail(), entity.getFullname(),
+				BCrypt.hashpw(entity.getPassword(), BCrypt.gensalt()), "", entity.getAddress(), entity.getPhone(), 3));
+	}
+
+	public boolean checkExistById(int id) {
+		// kiểm tra xem user id có tồn tại dưới database chưa
+		return userRepository.findById(id).isPresent();
+	}
+
+	public boolean checkExistByEmail(String email) {
+		// kiểm tra xem user email có tồn tại dưới database chưa
+		if (userRepository.findByEmail(email) == null)
+			return false;
+		return true;
+	}
+
+	public boolean checkExistByPhone(String phone) {
+		// kiểm tra xem user sdt có tồn tại dưới database chưa
+		if (userRepository.findByPhone(phone) == null)
+			return false;
+		return true;
+	}
+
+	public UserLoginDto getUserLoginDtoByEmail(String email) {
+		// chuyển từ entity sang dto
+		User user = userRepository.findByEmail(email);
+		return new UserLoginDto(user.getId(), user.getEmail(), user.getFullname(), user.getAvatar(), user.getPhone(),
+				user.getAddress(), user.getRole().getDescription());
+	}
+
+	public boolean checkPassword(String email, String oldPassword) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void changePassword(String email, String newPassword) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setNewPassword(int id, String newPassword) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

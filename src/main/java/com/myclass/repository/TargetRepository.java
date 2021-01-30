@@ -12,5 +12,7 @@ import com.myclass.entity.Target;
 public interface TargetRepository extends BaseRepository<Target, Integer>{
 	
 	@Query("SELECT new com.myclass.dto.TargetDto(t.id, t.title, c.title) FROM Target t LEFT JOIN Course c ON t.courseId = c.id")
-	List<TargetDto> getAllWithCourse();
+	public List<TargetDto> getAllWithCourse();
+
+	public Target findByTitle(String title);
 }

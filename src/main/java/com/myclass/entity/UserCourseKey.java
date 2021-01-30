@@ -13,4 +13,31 @@ public class UserCourseKey implements Serializable{
 	
 	@Column(name = "course_id")
 	int courseId;
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getCourseId() {
+		return courseId;
+	}
+
+	public void setCourseId(int courseId) {
+		this.courseId = courseId;
+	}
+
+	public UserCourseKey() {
+		super();
+	}
+
+	public UserCourseKey(int userId, int courseId) {
+		super();
+		this.userId = userId;
+		this.courseId = courseId;
+	}
+	
 }

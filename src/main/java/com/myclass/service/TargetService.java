@@ -18,4 +18,10 @@ public interface TargetService {
 
 	void edit(EditTargetDto entity);
 
+	boolean checkExistByTitle(String title);
+
+	boolean checkExistById(int id);
+
+	List<TargetDto> getMenuTargetByCourseId(int id);
+
 }

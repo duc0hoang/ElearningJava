@@ -7,4 +7,6 @@ import com.myclass.entity.Role;
 @Component
 public interface RoleRepository extends BaseRepository<Role, Integer>{
 
+	public Role findByName(String name);
+
 }

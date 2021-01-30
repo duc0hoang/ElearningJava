@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myclass.dto.LoginDto;
-import com.myclass.dto.SignUpDto;
+import com.myclass.dto.UserLoginDto;
 import com.myclass.service.AuthService;
 import com.myclass.service.UserService;
 
@@ -20,8 +20,6 @@ public class AuthController {
 	private AuthService authService;
 	private UserService userService;
 
-	
-
 	public AuthController(AuthService authService, UserService userService) {
 		this.authService = authService;
 		this.userService = userService;
@@ -30,23 +28,18 @@ public class AuthController {
 	@PostMapping("login")
 	public Object post(@Valid @RequestBody LoginDto dto) {
 		try {
-			
+			// tạo token đăng nhập
 			String token = authService.login(dto);
 
-			return new ResponseEntity<Object>(token, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-	}
+			// lấy ra thông tin user đăng nhập
+			UserLoginDto userLoginDto = userService.getUserLoginDtoByEmail(dto.getEmail());
 
-	@PostMapping("signup")
-	public Object post(@Valid @RequestBody SignUpDto dto) {
-		try {
-			userService.signUp(dto);
-			return new ResponseEntity<Object>(HttpStatus.CREATED);
+			// thêm token vào
+			userLoginDto.setToken(token);
+
+			// gửi trả về thông tin user đăng nhập vào hệ thống và token
+			return new ResponseEntity<Object>(userLoginDto, HttpStatus.OK);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);

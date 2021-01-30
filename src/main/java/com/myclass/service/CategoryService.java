@@ -17,8 +17,8 @@ public interface CategoryService {
 
 	void edit(CategoryDto entity);
 
-	boolean findByTitle(String title);
+	boolean checkExistById(int id);
 
-	boolean findByIcon(String icon);
+	boolean checkExistByTitle(String title);
 
 }
