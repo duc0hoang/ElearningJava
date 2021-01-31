@@ -16,4 +16,7 @@ public interface VideoRepository extends BaseRepository<Video, Integer>{
 
 	public Video findByTitle(String title);
 
+	@Query("SELECT new com.myclass.dto.VideoDto(v.id, v.title, v.url, v.timeCount, c.title) FROM Video v LEFT JOIN Course c ON v.courseId = c.id WHERE c.id = :id")
+	public List<VideoDto> getMenuVideoByCourseId(int id);
+
 }

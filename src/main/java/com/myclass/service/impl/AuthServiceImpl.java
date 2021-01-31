@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		Date now = new Date();
-		Date expiration = new Date(now.getTime() + 84000000L);
+		Date expiration = new Date(now.getTime() + 840000000L);
 
 		String token = Jwts.builder().setSubject(dto.getEmail()).setIssuedAt(now).setExpiration(expiration)
 				.signWith(SignatureAlgorithm.HS512, secretKey).compact();

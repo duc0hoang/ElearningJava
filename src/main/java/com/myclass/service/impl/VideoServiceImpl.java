@@ -1,15 +1,19 @@
 package com.myclass.service.impl;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.myclass.dto.AddVideoDto;
 import com.myclass.dto.EditVideoDto;
 import com.myclass.dto.VideoDto;
+import com.myclass.entity.Course;
 import com.myclass.entity.Video;
 import com.myclass.repository.VideoRepository;
 import com.myclass.service.VideoService;
@@ -65,18 +69,24 @@ public class VideoServiceImpl implements VideoService {
 	}
 
 	public List<VideoDto> getMenuVideoByCourseId(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return videoRepository.getMenuVideoByCourseId(id);
 	}
 
 	public boolean checkProperty(String orderBy) {
-		// TODO Auto-generated method stub
+		Field[] properties = new Video().getClass().getDeclaredFields();
+		for (Field field : properties) {
+			if (field.toString().endsWith(orderBy))
+				return true;
+		}
 		return false;
 	}
 
-	public Page<Video> findAllPaging(String orderBy, int i, int pageSize, boolean b) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<Video> findAllPaging(String orderBy, int pageIndex, int pageSize, boolean descending) {
+		if (descending)
+			return videoRepository.findAll(PageRequest.of(pageIndex, pageSize, Sort.by(orderBy).descending()));
+
+		return videoRepository.findAll(PageRequest.of(pageIndex, pageSize, Sort.by(orderBy)));
 	}
 
 }

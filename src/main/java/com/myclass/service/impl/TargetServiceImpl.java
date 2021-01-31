@@ -62,7 +62,7 @@ public class TargetServiceImpl implements TargetService {
 
 	public List<TargetDto> getMenuTargetByCourseId(int id) {
 		
-		return null;
+		return targetRepository.getMenuTargetByCourseId(id);
 	}
 
 }

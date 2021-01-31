@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.myclass.dto.AddUserCourseDto;
-import com.myclass.dto.UserAddCourseDto;
 import com.myclass.dto.UserCourseDto;
 import com.myclass.entity.Course;
 import com.myclass.entity.User;
@@ -52,17 +51,33 @@ public class UserCourseServiceImpl implements UserCourseService {
 	}
 
 	public List<UserCourseDto> getAllCourseByUserId(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserCourse> userCourseList = userCourseRepository.findAll();
+		List<UserCourseDto> userCourseDtoList = new ArrayList<UserCourseDto>();
+		for (UserCourse userCourse : userCourseList) {
+			if (userCourse.getId().getUserId() == userId) {
+				UserCourseDto userCourseDto = new UserCourseDto(userCourse.getUser().getEmail(),
+						userCourse.getCourse().getTitle());
+				userCourseDtoList.add(userCourseDto);
+			}
+		}
+		return userCourseDtoList;
 	}
 
 	public List<UserCourseDto> getAllUserByCourseId(int courseId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserCourse> userCourseList = userCourseRepository.findAll();
+		List<UserCourseDto> userCourseDtoList = new ArrayList<UserCourseDto>();
+		for (UserCourse userCourse : userCourseList) {
+			if (userCourse.getId().getCourseId() == courseId) {
+				UserCourseDto userCourseDto = new UserCourseDto(userCourse.getUser().getEmail(),
+						userCourse.getCourse().getTitle());
+				userCourseDtoList.add(userCourseDto);
+			}
+		}
+		return userCourseDtoList;
 	}
 
 	public boolean checkUserWithCourse(AddUserCourseDto dto) {
-		// TODO Auto-generated method stub
-		return false;
+		UserCourseKey key = new UserCourseKey(dto.getUserId(),dto.getCourseId());
+		return userCourseRepository.findById(key).isPresent();
 	}
 }

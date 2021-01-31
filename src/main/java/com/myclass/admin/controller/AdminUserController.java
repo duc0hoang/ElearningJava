@@ -161,4 +161,27 @@ public class AdminUserController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
+	
+	@GetMapping("getAvatar/{id}")
+	public Object getAvatar(@PathVariable int id) {
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@PostMapping("addAvatar/{id}")
+	public Object addAvatar(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@PutMapping("editAvatar/{id}")
+	public Object editAvatar(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@DeleteMapping("deleteAvatar/{id}")
+	public Object deleteAvatar(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
 }

@@ -132,8 +132,19 @@ public class AdminUserCourseController {
 	}
 
 	@DeleteMapping("{userId}")
-	public Object delete(@PathVariable int userId) {
+	public Object delete(@Valid @RequestBody AddUserCourseDto dto, @PathVariable int userId) {
 		try {
+			// kiểm tra user id gửi lên có tồn tại trong database hay không
+			if (!userService.checkExistById(dto.getUserId()))
+				return new ResponseEntity<Object>(userIsNotExist, HttpStatus.BAD_REQUEST);
+
+			// kiểm tra course id gửi lên có tồn tại trong database hay không
+			if (!courseService.checkExistById(dto.getCourseId()))
+				return new ResponseEntity<Object>(courseIsNotExist, HttpStatus.BAD_REQUEST);
+
+			// kiểm tra user này đã add course này chưa
+			if (userCourseService.checkUserWithCourse(dto))
+				return null;
 
 		} catch (Exception e) {
 			// TODO: handle exception

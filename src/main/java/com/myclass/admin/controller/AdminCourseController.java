@@ -135,4 +135,27 @@ public class AdminCourseController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
+	
+	@GetMapping("getImage/{id}")
+	public Object getImage(@PathVariable int id) {
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@PostMapping("addImage/{id}")
+	public Object addImage(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@PutMapping("editImage/{id}")
+	public Object editImage(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
+	
+	@DeleteMapping("deleteImage/{id}")
+	public Object deleteImage(@PathVariable int id) {
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	}
 }

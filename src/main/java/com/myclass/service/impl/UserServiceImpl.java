@@ -89,18 +89,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public boolean checkPassword(String email, String oldPassword) {
-		// TODO Auto-generated method stub
-		return false;
+		User user = userRepository.findByEmail(email);
+		return BCrypt.checkpw(oldPassword, user.getPassword());
 	}
 
 	public void changePassword(String email, String newPassword) {
-		// TODO Auto-generated method stub
-
+		User user = userRepository.findByEmail(email);
+		user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+		userRepository.save(user);
 	}
 
 	public void setNewPassword(int id, String newPassword) {
-		// TODO Auto-generated method stub
-
+		User user = userRepository.findById(id).get();
+		user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+		userRepository.save(user);
 	}
 
 }
