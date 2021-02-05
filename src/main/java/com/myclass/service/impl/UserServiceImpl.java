@@ -11,6 +11,7 @@ import com.myclass.dto.AddUserDto;
 import com.myclass.dto.EditUserDto;
 import com.myclass.dto.SignUpDto;
 import com.myclass.dto.UserDto;
+import com.myclass.dto.UserInfoDto;
 import com.myclass.dto.UserLoginDto;
 import com.myclass.entity.User;
 import com.myclass.repository.UserRepository;
@@ -102,6 +103,31 @@ public class UserServiceImpl implements UserService {
 	public void setNewPassword(int id, String newPassword) {
 		User user = userRepository.findById(id).get();
 		user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+		userRepository.save(user);
+	}
+
+	public String getAvatarById(int id) {
+		return userRepository.findById(id).get().getAvatar();
+	}
+
+	public void editAvatarById(int id, String image) {
+		User user = userRepository.findById(id).get();
+		user.setAvatar(image);
+		userRepository.save(user);
+	}
+
+	public UserInfoDto getInfoByEmail(String email) {
+		User user = userRepository.findByEmail(email);
+		return new UserInfoDto(user.getFullname(),user.getAvatar(),user.getPhone(),user.getAddress());
+	}
+
+	public String getAvatarByEmail(String email) {
+		return userRepository.findByEmail(email).getAvatar();
+	}
+
+	public void editAvatarByEmail(String email, String upload) {
+		User user = userRepository.findByEmail(email);
+		user.setAvatar(upload);
 		userRepository.save(user);
 	}
 

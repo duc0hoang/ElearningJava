@@ -2,10 +2,13 @@ package com.myclass.service;
 
 import java.util.List;
 
+import org.springframework.util.MultiValueMap;
+
 import com.myclass.dto.AddUserDto;
 import com.myclass.dto.EditUserDto;
 import com.myclass.dto.SignUpDto;
 import com.myclass.dto.UserDto;
+import com.myclass.dto.UserInfoDto;
 import com.myclass.dto.UserLoginDto;
 
 public interface UserService {
@@ -35,5 +38,15 @@ public interface UserService {
 	void changePassword(String email, String newPassword);
 
 	void setNewPassword(int id, String newPassword);
+
+	String getAvatarById(int id);
+
+	void editAvatarById(int id, String image);
+
+	UserInfoDto getInfoByEmail(String email);
+
+	String getAvatarByEmail(String email);
+
+	void editAvatarByEmail(String email, String upload);
 
 }

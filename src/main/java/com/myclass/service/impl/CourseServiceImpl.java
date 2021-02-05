@@ -107,4 +107,14 @@ public class CourseServiceImpl implements CourseService {
 		return false;
 	}
 
+	public String getImageById(int id) {
+		return courseRepository.findById(id).get().getImage();
+	}
+
+	public void editImageById(int id, String image) {
+		Course course = courseRepository.findById(id).get();
+		course.setImage(image);
+		courseRepository.save(course);
+	}
+
 }

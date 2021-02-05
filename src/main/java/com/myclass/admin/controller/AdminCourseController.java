@@ -12,18 +12,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.myclass.dto.AddCourseDto;
 import com.myclass.dto.EditCourseDto;
 import com.myclass.service.CategoryService;
 import com.myclass.service.CourseService;
+import com.myclass.service.FileService;
 
 @RestController
 @RequestMapping("/api/admin/course")
 public class AdminCourseController {
 	private CourseService courseService;
 	private CategoryService categoryService;
+	private FileService fileService;
 
 	@Value("${message.title}")
 	private String titleIsExist;
@@ -34,9 +38,17 @@ public class AdminCourseController {
 	@Value("${message.id}")
 	private String idIsNotExist;
 
-	public AdminCourseController(CourseService courseService, CategoryService categoryService) {
+	@Value("${file.upload-course}")
+	private String uploadDir;
+
+	@Value("${message.image}")
+	private String imageIsNotExist;
+
+	public AdminCourseController(CourseService courseService, CategoryService categoryService,
+			FileService fileService) {
 		this.courseService = courseService;
 		this.categoryService = categoryService;
+		this.fileService = fileService;
 	}
 
 	// lấy danh sách course
@@ -135,27 +147,60 @@ public class AdminCourseController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@GetMapping("getImage/{id}")
 	public Object getImage(@PathVariable int id) {
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+		try {
+			// check xem courseId có tồn tại chưa
+			if (!courseService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			return new ResponseEntity<Object>(courseService.getImageById(id), HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
-	@PostMapping("addImage/{id}")
-	public Object addImage(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+
+	@PutMapping("uploadImage/{id}")
+	public Object addImage(@PathVariable int id, @RequestParam MultipartFile file) {
+		try {
+			// check xem courseId có tồn tại chưa
+			if (!courseService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			courseService.editImageById(id, fileService.upload(file, uploadDir));
+			return new ResponseEntity<Object>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
-	@PutMapping("editImage/{id}")
-	public Object editImage(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
-	}
-	
-	@DeleteMapping("deleteImage/{id}")
+
+	@DeleteMapping("removeImage/{id}")
 	public Object deleteImage(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+		try {
+			// check xem courseId có tồn tại chưa
+			if (!courseService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			String imageName = courseService.getImageById(id);
+
+			if ("".equals(imageName))
+				return new ResponseEntity<Object>(imageIsNotExist, HttpStatus.BAD_REQUEST);
+			
+			if (fileService.deleteIfExists(imageName, uploadDir))
+				courseService.editImageById(id, "");
+			else
+				return new ResponseEntity<Object>(imageIsNotExist, HttpStatus.BAD_REQUEST);
+
+			return new ResponseEntity<Object>(HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
 }

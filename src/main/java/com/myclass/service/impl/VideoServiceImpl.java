@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.myclass.dto.AddVideoDto;
 import com.myclass.dto.EditVideoDto;
 import com.myclass.dto.VideoDto;
-import com.myclass.entity.Course;
 import com.myclass.entity.Video;
 import com.myclass.repository.VideoRepository;
 import com.myclass.service.VideoService;

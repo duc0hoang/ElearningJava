@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.myclass.dto.AddUserDto;
 import com.myclass.dto.EditUserDto;
 import com.myclass.dto.SetPasswordDto;
+import com.myclass.service.FileService;
 import com.myclass.service.RoleService;
 import com.myclass.service.UserService;
 
@@ -25,22 +28,30 @@ import com.myclass.service.UserService;
 public class AdminUserController {
 	private UserService userService;
 	private RoleService roleService;
+	private FileService fileService;
 
 	@Value("${message.id}")
 	private String idIsNotExist;
 
 	@Value("${message.email}")
 	private String emailIsExist;
-	
+
 	@Value("${message.phone}")
 	private String phoneIsExist;
 
 	@Value("${message.role}")
 	private String roleIsNotExist;
 
-	public AdminUserController(UserService userService, RoleService roleService) {
+	@Value("${file.upload-user}")
+	private String uploadDir;
+
+	@Value("${message.image}")
+	private String imageIsNotExist;
+
+	public AdminUserController(UserService userService, RoleService roleService, FileService fileService) {
 		this.userService = userService;
 		this.roleService = roleService;
+		this.fileService = fileService;
 	}
 
 	@GetMapping("")
@@ -140,7 +151,7 @@ public class AdminUserController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@PutMapping("setPassword/{id}")
 	public Object setPassword(@Valid @RequestBody SetPasswordDto dto, @PathVariable int id) {
 		try {
@@ -161,27 +172,60 @@ public class AdminUserController {
 		}
 		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@GetMapping("getAvatar/{id}")
-	public Object getAvatar(@PathVariable int id) {
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+	public Object getImage(@PathVariable int id) {
+		try {
+			// check xem user id có tồn tại hay không
+			if (!userService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			return new ResponseEntity<Object>(userService.getAvatarById(id), HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
-	@PostMapping("addAvatar/{id}")
-	public Object addAvatar(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+
+	@PutMapping("uploadAvatar/{id}")
+	public Object addImage(@PathVariable int id, @RequestParam MultipartFile file) {
+		try {
+			// check xem user id có tồn tại hay không
+			if (!userService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			userService.editAvatarById(id, fileService.upload(file, uploadDir));
+			return new ResponseEntity<Object>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
-	
-	@PutMapping("editAvatar/{id}")
-	public Object editAvatar(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
-	}
-	
-	@DeleteMapping("deleteAvatar/{id}")
-	public Object deleteAvatar(@PathVariable int id) {
-		
-		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);	
+
+	@DeleteMapping("removeAvatar/{id}")
+	public Object deleteImage(@PathVariable int id) {
+		try {
+			// check xem user id có tồn tại hay không
+			if (!userService.checkExistById(id))
+				return new ResponseEntity<Object>(idIsNotExist, HttpStatus.BAD_REQUEST);
+
+			String imageName = userService.getAvatarById(id);
+
+			if ("".equals(imageName))
+				return new ResponseEntity<Object>(imageIsNotExist, HttpStatus.BAD_REQUEST);
+
+			if (fileService.deleteIfExists(imageName, uploadDir))
+				userService.editAvatarById(id, "");
+			else
+				return new ResponseEntity<Object>(imageIsNotExist, HttpStatus.BAD_REQUEST);
+
+			return new ResponseEntity<Object>(HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
 }

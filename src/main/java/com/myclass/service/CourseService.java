@@ -33,6 +33,10 @@ public interface CourseService {
 	Page<Course> findAllPaging(String orderBy, int pageIndex, int pageSize, boolean descending);
 
 	boolean checkProperty(String orderBy);
+
+	String getImageById(int id);
+
+	void editImageById(int id, String image);
 	
 	
 
